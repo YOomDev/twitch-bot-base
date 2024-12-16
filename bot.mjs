@@ -87,7 +87,7 @@ client.on('message', (channel, userState, message, self) => {
     parseTwitch(channel, userState, message).catch(err => logError(err));
 });
 
-
+function sendMessageTwitch(channel, msg) { if (msg) { client.say(channel, msg); } else { logError("Tried sending a message but either the message or the channel was missing from the specified arguments!"); } }
 
 function registerCommands() {
     logInfo("Started loading commands.");
