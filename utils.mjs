@@ -27,7 +27,7 @@ export function concat(list, separator = "", prefix = "", start = 0, count = lis
     return result;
 }
 
-export function readFile(filePath) {
+export function readFile(path) {
     try {
         const data = fs.readFileSync(path, 'utf8').split("\n");
         const lines = [];
