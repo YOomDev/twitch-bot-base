@@ -49,7 +49,7 @@ const adminLevels = [
 ];
 
 function getUserType(userState) {
-    if (equals(userState.username, superuserName)) { return DEVELOPER; }
+    if (equals(userState.username, config.superuserName)) { return DEVELOPER; }
     if (userState.badges) { if (userState.badges['broadcaster']) { return BROADCASTER; } }
     if (userState.mod) { return MODERATOR  ; }
     if (userState.badges) { if (userState.badges['vip']) { return VIP; } }
