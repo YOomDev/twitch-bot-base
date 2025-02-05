@@ -21,6 +21,7 @@ export async function start(cmdProperties = []) {
     while (!ready) { await sleep(0.25); }
     ready = false;
     reload();
+    return client;
 }
 
 function reload() { registerCommands(); }
@@ -75,6 +76,8 @@ const client = new tmi.Client({
     },
     channels: [`#${config.channel}`]
 });
+client.global = {}
+
 client.on('message', (channel, userState, message, self) => {
     if (self) { return; }
     if (containsIgnoreCase(config.ignoreUsers, userState['display-name'].toString())) {
