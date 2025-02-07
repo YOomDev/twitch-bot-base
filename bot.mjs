@@ -94,7 +94,7 @@ client.on('message', (channel, userState, message, self) => {
 // TODO: add message queueing for large userbases to make sure api limits are not exceeded
 function sendMessageTwitch(channel, msg) { if (msg && channel) { client.say(channel, msg); } else { logError("Tried sending a message but either the message or the channel was missing from the specified arguments!"); } }
 
-function registerCommands() {
+async function registerCommands() {
     logInfo("Started loading commands.");
     commandList.slice(0, commandList.length);
 
@@ -104,7 +104,7 @@ function registerCommands() {
         const commandFiles = fs.readdirSync(folder).filter(file => file.endsWith('.mjs'));
         for (const file of commandFiles) {
             const filePath = path.join(folder, file);
-            const command = require(filePath);
+            let command = (await import(new URL(filePath, import.meta.url)).catch(err => logError(err)).then(_ => { return _; })).default;
 
             // Check if command has all the needed properties
             let failed = false;
