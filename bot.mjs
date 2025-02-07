@@ -68,7 +68,7 @@ function getAdminLevel(type) {
     return -1;
 }
 
-const client = new tmi.Client({
+const client = new Client({
     options: { debug: true },
     connection: { reconnect: true, secure: true },
     identity: {
