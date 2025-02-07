@@ -99,7 +99,7 @@ function registerCommands() {
     commandList.slice(0, commandList.length);
 
     const folders = ["./commands"];
-    for (const folder of commandFolders) { folders.push(folder); }
+    // for (const folder of commandFolders) { folders.push(folder); }
     for (const folder of folders) {
         const commandFiles = fs.readdirSync(folder).filter(file => file.endsWith('.js'));
         for (const file of commandFiles) {
