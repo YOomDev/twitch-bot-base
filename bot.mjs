@@ -98,12 +98,12 @@ async function registerCommands() {
     logInfo("Started loading commands.");
     commandList.slice(0, commandList.length);
 
-    const folders = ["./commands"];
+    const folders = ["./commands", "./discord-bot-base/commands"];
     // for (const folder of commandFolders) { folders.push(folder); }
     for (const folder of folders) {
         const commandFiles = fs.readdirSync(folder).filter(file => file.endsWith('.mjs'));
         for (const file of commandFiles) {
-            const filePath = path.join(folder, file);
+            const filePath = "..\\" + path.join(folder, file);
             let command = (await import(new URL(filePath, import.meta.url)).catch(err => logError(err)).then(_ => { return _; })).default;
 
             // Check if command has all the needed properties
