@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { client as Client } from 'tmi.js';
 const loadJSON = (path) => JSON.parse(fs.readFileSync(new URL(path, import.meta.url)));
 
 import { logError, logWarning, logInfo, sleep, contains, equals, randomInt, concat, readFile } from "./utils.mjs";
