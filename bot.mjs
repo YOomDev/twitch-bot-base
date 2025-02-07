@@ -73,7 +73,7 @@ const client = new tmi.Client({
     connection: { reconnect: true, secure: true },
     identity: {
         username: config.clientName,
-        password: `oauth:${config.token}`
+        password: `oauth:${config.ttvtoken}`
     },
     channels: [`#${config.channel}`]
 });
