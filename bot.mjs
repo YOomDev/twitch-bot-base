@@ -141,7 +141,7 @@ async function parseTwitch(channel, userState, message) {
             }
         }
         if (!found) {
-
+            sendMessageTwitch(channel, `Couldn't find the command that you tried to use ${userState['display-name']}...`)
         }
     } else {
         if (!contains(twitchChatters, userId)) {
