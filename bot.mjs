@@ -146,7 +146,7 @@ async function parseTwitch(channel, userState, message) {
     } else {
         if (!contains(twitchChatters, userId)) {
             if (message.toString().indexOf("***") > -1) { return; }
-            if (hasURL(message)) { return; }
+            // if (hasURL(message)) { return; }
             twitchChatters.push(userId);
             const lines = readFile(`${config.automatedMessagesFolder}welcomeMessages${userState['first-msg'] ? "First" : ""}.txt`);
             sendMessageTwitch(channel, lines[randomInt(lines.length)].replaceAll("{USER}", userState['display-name']));
