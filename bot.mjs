@@ -98,7 +98,7 @@ async function registerCommands() {
     logInfo("Started loading commands.");
     commandList.slice(0, commandList.length);
 
-    const folders = ["./commands", "./discord-bot-base/commands"];
+    const folders = ["./commands", "./twitch-bot-base/commands"];
     // for (const folder of commandFolders) { folders.push(folder); }
     for (const folder of folders) {
         const commandFiles = fs.readdirSync(folder).filter(file => file.endsWith('.mjs'));
