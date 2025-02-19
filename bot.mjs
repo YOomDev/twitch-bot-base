@@ -135,6 +135,8 @@ async function parseTwitch(channel, userState, message) {
             if (equals(commandName, commandList[i].name)) {
                 const command = commandList[i];
 
+                command.reply(channel, userState, params, message);
+
                 // end
                 found = true;
                 break;
