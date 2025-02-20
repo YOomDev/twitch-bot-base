@@ -9,7 +9,6 @@ import { logError, logWarning, logInfo, sleep, contains, equals, randomInt, conc
 const commandProperties = ["name", "reply"];
 const config = loadJSON('./config.json');
 
-const commandList = [];
 const twitchChatters = [];
 
 let ready = false;
@@ -77,6 +76,7 @@ const client = new Client({
     },
     channels: [`#${config.channel}`]
 });
+client.commands = []
 client.global = {}
 
 client.on('message', (channel, userState, message, self) => {
@@ -96,7 +96,7 @@ function sendMessageTwitch(channel, msg) { if (msg && channel) { client.say(chan
 
 async function registerCommands() {
     logInfo("Started loading commands.");
-    commandList.slice(0, commandList.length);
+    client.commands.slice(0, client.commands.length);
 
     const folders = ["./commands", "./twitch-bot-base/commands"];
     // for (const folder of commandFolders) { folders.push(folder); }
@@ -117,7 +117,7 @@ async function registerCommands() {
             if (failed) { continue; } // Skip
 
             // Set a new item in the Collection with the key as the command name and the value as the exported module
-            commandList.push({ name: command.data.name, command: command });
+            client.commands.push({ name: command.data.name, command: command });
         }
     }
 }
@@ -130,9 +130,9 @@ async function parseTwitch(channel, userState, message) {
         // const adminLevel = getAdminLevel(getUserType(userState));
 
         let found = false;
-        for (let i = 0; i < commandList.length; i++) {
-            if (equals(commandName, commandList[i].name)) {
-                const command = commandList[i];
+        for (let i = 0; i < client.commands.length; i++) {
+            if (equals(commandName, client.commands[i].name)) {
+                const command = client.commands[i];
 
                 command.reply(client, channel, userState, params, message);
 
