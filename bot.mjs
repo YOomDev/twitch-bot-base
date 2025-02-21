@@ -18,6 +18,7 @@ export async function start(cmdProperties = []) {
     for (const properties of cmdProperties) { if (!contains(commandProperties, properties)) { commandProperties.push(properties); } }
     ready = false;
     client.connect().catch(err => { logError(err); }).then(_ => { ready = true; });
+    setupEvents();
     while (!ready) { await sleep(0.25); }
     ready = false;
     reload();
@@ -81,85 +82,85 @@ client.utils = {}
 client.utils.sendChannelMessage = sendMessageTwitch;
 client.global = {}
 
-client.on('message', (channel, userState, message, self) => {
-    if (self) { return; }
-
-    // line below will be replaced by if statement above this when it works
-    for (let i = 0; i < ignoreUsers.length; i++) { if (equals(ignoreUsers[i].toLowerCase(), userState['display-name'].toString().toLowerCase())) { return; } }
-
-    parseTwitch(channel, userState, message).catch(err => logError(err));
-});
-client.on('clearchat', (channel, self) => {
-    if (self) { return; }
-    sendMessageTwitch(channel, `Cleared the chat - Happy chatting!`);
-    logInfo(`${channel}: Moderator cleared the chat.`);
-});
-client.on('unhost', (channel, viewers) => {
-    sendMessageTwitch(channel, `Stopped hosting ${channel} with ${viewers} viewers`);
-    logInfo(`${channel}: Stopped hosting on ${channel} with ${viewers}`);
-});
-client.on('hosting', (channel, msgSplit, viewers) => {
-    sendMessageTwitch(channel, `Hosting ${channel} together with ${viewers}`);
-    logInfo(`${channel}: Hosting on ${channel} with ${viewers}`);
-});
-client.on('raided', (channel, username, viewers, tags) => {
-    sendMessageTwitch(channel, `${tags['system-msg']}`);
-    logInfo(`${channel}: ${tags['system-msg']}`);
-});
-client.on('ban', (channel, msg, something, tags) => {
-    sendMessageTwitch(channel, `Ban on ${channel} for username ${msg}`);
-    logInfo(`${channel}: banned: ${msg}`);
-});
-client.on('timeout', (channel, msg, something, duration, tags) => {
-    sendMessageTwitch(channel, `Timeout for username ${msg} with a duration of ${duration}`);
-    logInfo(`${channel}: timeout: ${msg}:${duration}`);
-});
-client.on('resub', (channel, username, methods, msg, tags) => {
-    if (msg) {
-        sendMessageTwitch(channel, `${tags['system-msg']} Message: ${msg}`);
-        logInfo(`${channel}: ${tags['system-msg']} Message: ${msg}`);
-    } else {
+function setupEvents() {
+    client.on('message', (channel, userState, message, self) => {
+        if (self) { return; }
+        // line below will be replaced by if statement above this when it works
+        for (let i = 0; i < ignoreUsers.length; i++) { if (equals(ignoreUsers[i].toLowerCase(), userState['display-name'].toString().toLowerCase())) { return; } }
+        parseTwitch(channel, userState, message).catch(err => logError(err));
+    });
+    client.on('clearchat', (channel, self) => {
+        if (self) { return; }
+        sendMessageTwitch(channel, `Cleared the chat - Happy chatting!`);
+        logInfo(`${channel}: Moderator cleared the chat.`);
+    });
+    client.on('unhost', (channel, viewers) => {
+        sendMessageTwitch(channel, `Stopped hosting ${channel} with ${viewers} viewers`);
+        logInfo(`${channel}: Stopped hosting on ${channel} with ${viewers}`);
+    });
+    client.on('hosting', (channel, msgSplit, viewers) => {
+        sendMessageTwitch(channel, `Hosting ${channel} together with ${viewers}`);
+        logInfo(`${channel}: Hosting on ${channel} with ${viewers}`);
+    });
+    client.on('raided', (channel, username, viewers, tags) => {
         sendMessageTwitch(channel, `${tags['system-msg']}`);
         logInfo(`${channel}: ${tags['system-msg']}`);
-    }
-});
-client.on('sub', (channel, username, methods, msg, tags) => {
-    if (msg) {
-        sendMessageTwitch(channel, `${tags['system-msg']} Message: ${msg}`);
-        logInfo(`${channel}: ${tags['system-msg']} Message: ${msg}`);
-    } else {
+    });
+    client.on('ban', (channel, msg, something, tags) => {
+        sendMessageTwitch(channel, `Ban on ${channel} for username ${msg}`);
+        logInfo(`${channel}: banned: ${msg}`);
+    });
+    client.on('timeout', (channel, msg, something, duration, tags) => {
+        sendMessageTwitch(channel, `Timeout for username ${msg} with a duration of ${duration}`);
+        logInfo(`${channel}: timeout: ${msg}:${duration}`);
+    });
+    client.on('resub', (channel, username, methods, msg, tags) => {
+        if (msg) {
+            sendMessageTwitch(channel, `${tags['system-msg']} Message: ${msg}`);
+            logInfo(`${channel}: ${tags['system-msg']} Message: ${msg}`);
+        } else {
+            sendMessageTwitch(channel, `${tags['system-msg']}`);
+            logInfo(`${channel}: ${tags['system-msg']}`);
+        }
+    });
+    client.on('sub', (channel, username, methods, msg, tags) => {
+        if (msg) {
+            sendMessageTwitch(channel, `${tags['system-msg']} Message: ${msg}`);
+            logInfo(`${channel}: ${tags['system-msg']} Message: ${msg}`);
+        } else {
+            sendMessageTwitch(channel, `${tags['system-msg']}`);
+            logInfo(`${channel}: ${tags['system-msg']}`);
+        }
+    });
+    client.on('subgift', (channel, username, streakMonths, recipient, methods, tags) => {
         sendMessageTwitch(channel, `${tags['system-msg']}`);
         logInfo(`${channel}: ${tags['system-msg']}`);
-    }
-});
-client.on('subgift', (channel, username, streakMonths, recipient, methods, tags) => {
-    sendMessageTwitch(channel, `${tags['system-msg']}`);
-    logInfo(`${channel}: ${tags['system-msg']}`);
-});
-client.on('anonsubgift', (channel, streakMonths, recipient, methods, tags) => {
-    sendMessageTwitch(channel, `${tags['system-msg']}`);
-    logInfo(`${channel}: ${tags['system-msg']}`);
-});
-client.on('submysterygift', (channel, username, giftSubCount, methods, tags) => {
-    sendMessageTwitch(channel, `${tags['system-msg']}`);
-    logInfo(`${channel}: ${tags['system-msg']}`);
-});
-client.on('anonsubmysterygift', (channel, giftSubCount, methods, tags) => {
-    sendMessageTwitch(channel, `${tags['system-msg']}`);
-    logInfo(`${channel}: ${tags['system-msg']}`);
-});
-client.on('primepaidupgrade', (channel, username, methods, tags) => {
-    sendMessageTwitch(channel, `${tags['system-msg']}`);
-    logInfo(`${channel}: ${tags['system-msg']}`);
-});
-client.on('giftpaidupgrade', (channel, username, sender, tags) => {
-    sendMessageTwitch(channel, `${tags['system-msg']}`);
-    logInfo(`${channel}: ${tags['system-msg']}`);
-});
-client.on('anongiftpaidupgrade', (channel, username, tags) => {
-    sendMessageTwitch(channel, `${tags['system-msg']}`);
-    logInfo(`${channel}: ${tags['system-msg']}`);
-});
+    });
+    client.on('anonsubgift', (channel, streakMonths, recipient, methods, tags) => {
+        sendMessageTwitch(channel, `${tags['system-msg']}`);
+        logInfo(`${channel}: ${tags['system-msg']}`);
+    });
+    client.on('submysterygift', (channel, username, giftSubCount, methods, tags) => {
+        sendMessageTwitch(channel, `${tags['system-msg']}`);
+        logInfo(`${channel}: ${tags['system-msg']}`);
+    });
+    client.on('anonsubmysterygift', (channel, giftSubCount, methods, tags) => {
+        sendMessageTwitch(channel, `${tags['system-msg']}`);
+        logInfo(`${channel}: ${tags['system-msg']}`);
+    });
+    client.on('primepaidupgrade', (channel, username, methods, tags) => {
+        sendMessageTwitch(channel, `${tags['system-msg']}`);
+        logInfo(`${channel}: ${tags['system-msg']}`);
+    });
+    client.on('giftpaidupgrade', (channel, username, sender, tags) => {
+        sendMessageTwitch(channel, `${tags['system-msg']}`);
+        logInfo(`${channel}: ${tags['system-msg']}`);
+    });
+    client.on('anongiftpaidupgrade', (channel, username, tags) => {
+        sendMessageTwitch(channel, `${tags['system-msg']}`);
+        logInfo(`${channel}: ${tags['system-msg']}`);
+    });
+}
 
 // TODO: add message queueing for large userbases to make sure api limits are not exceeded
 function sendMessageTwitch(channel, msg) { if (msg && channel) { client.say(channel, msg); } else { logError("Tried sending a message but either the message or the channel was missing from the specified arguments!"); } }
