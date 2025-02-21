@@ -188,7 +188,7 @@ async function registerCommands() {
             if (failed) { continue; } // Skip
 
             // Set a new item in the Collection with the key as the command name and the value as the exported module
-            client.commands.push({ name: command.data.name, command: command });
+            client.commands.push({ name: command.name, command: command });
         }
     }
     logInfo("Loaded all possible commands");
