@@ -77,6 +77,8 @@ const client = new Client({
     channels: [`#${config.channel}`]
 });
 client.commands = []
+client.utils = {}
+client.utils.sendChannelMessage = sendMessageTwitch;
 client.global = {}
 
 client.on('message', (channel, userState, message, self) => {
