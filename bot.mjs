@@ -191,6 +191,7 @@ async function registerCommands() {
             client.commands.push({ name: command.data.name, command: command });
         }
     }
+    logInfo("Loaded all possible commands");
 }
 
 async function parseTwitch(channel, userState, message) {
