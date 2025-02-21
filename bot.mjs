@@ -83,9 +83,6 @@ client.global = {}
 
 client.on('message', (channel, userState, message, self) => {
     if (self) { return; }
-    if (containsIgnoreCase(config.ignoreUsers, userState['display-name'].toString())) {
-        // check if works
-    }
 
     // line below will be replaced by if statement above this when it works
     for (let i = 0; i < ignoreUsers.length; i++) { if (equals(ignoreUsers[i].toLowerCase(), userState['display-name'].toString().toLowerCase())) { return; } }
