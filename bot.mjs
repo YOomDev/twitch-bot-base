@@ -311,7 +311,7 @@ async function playAutomatedMessage() {
             case "random":
 
                 break;
-            case "burst":
+            case "ordered":
                 for (let i = 0; i < lines.length; i++) {
                     await awaitAutomatedMessageActive();
                     hasTimePassedSinceLastAutomatedMessage = false;
@@ -320,7 +320,7 @@ async function playAutomatedMessage() {
                     if (i < lines.length - 1) { sleep(minutesBetweenAutomatedMessages * 60).then(_ => { hasTimePassedSinceLastAutomatedMessage = true; }); }
                 }
                 break;
-            case "ordered":
+            case "burst":
                 for (let i = 0; i < lines.length; i++) {
                     sendMessageTwitch(channel, lines[i]);
                     if (i < lines.length - 1) {await sleep(5); }
