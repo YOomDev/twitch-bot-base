@@ -238,6 +238,16 @@ async function parseTwitch(channel, userState, message) {
 // Automated messages // // TODO: REFACTOR or REWRITE!
 ////////////////////////
 
+let runMessages = false; // gets changed by config
+let messagesNeededBeforeAutomatedMessage = 10; // gets changed by config
+let minutesBetweenAutomatedMessages = 5; // gets changed by config
+let messagesSinceLastAutomatedMessage = 0;
+let automatedMessageManager;
+let currentAutomatedMessage = 0;
+let hasTimePassedSinceLastAutomatedMessage = true;
+let automatedMessages = [];
+
+
 async function reloadAutomatedMessages() {
     const messageConfig = readFile(`${config.automatedMessagesFolder}config.txt`);
     for (let i = 0; i < messageConfig.length; i++) {
