@@ -300,6 +300,7 @@ async function playAutomatedMessage() {
     if (!runMessages) { return; }
     if (isChatActive()) {
         const channel = client.channels[0];
+        if (randomizedOrder) { currentAutomatedMessage = randomInt(0, automatedMessages.length) }
         while (currentAutomatedMessage >= automatedMessages.length) { currentAutomatedMessage -= automatedMessages.length; }
         const message = automatedMessages[currentAutomatedMessage];
         let lines = readFile(`${config.automatedMessagesFolder}${message.file}.txt`);
