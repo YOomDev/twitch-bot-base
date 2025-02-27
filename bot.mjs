@@ -23,6 +23,7 @@ export async function start(cmdProperties = []) {
     while (!ready) { await sleep(0.25); }
     ready = false;
     reload();
+    if (autoMsgConfig.enabled === true) { reloadAutomatedMessages().catch(_ => {}); }
     return client;
 }
 
@@ -237,15 +238,7 @@ async function parseTwitch(channel, userState, message) {
 // Automated messages // // TODO: REFACTOR or REWRITE!
 ////////////////////////
 
-let messagesNeededBeforeAutomatedMessage = 10;
-let messagesSinceLastAutomatedMessage = 0;
-let automatedMessageManager;
-let currentAutomatedMessage = 0;
-let runMessages = true;
-let hasTimePassedSinceLastAutomatedMessage = true;
-let automatedMessages = [];
-
-async function reloadTwitchTimedMessages() {
+async function reloadAutomatedMessages() {
     const messageConfig = readFile(`${config.automatedMessagesFolder}config.txt`);
     for (let i = 0; i < messageConfig.length; i++) {
         let line = messageConfig[i].split(" ");
