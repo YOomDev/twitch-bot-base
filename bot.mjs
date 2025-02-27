@@ -77,10 +77,14 @@ const client = new Client({
     },
     channels: [`#${config.channel}`]
 });
-client.commands = []
-client.utils = {}
+client.commands = [];
+client.utils = {};
 client.utils.sendChannelMessage = sendMessageTwitch;
-client.global = {}
+client.utils.log = logInfo;
+client.utils.logWarn = logWarning;
+client.utils.logErr = logError;
+client.utils.data = logData;
+client.global = {};
 
 function setupEvents() {
     client.on('message', (channel, userState, message, self) => {
