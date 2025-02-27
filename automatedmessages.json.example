@@ -1,0 +1,38 @@
+{
+  "enabled": false,
+  "chatsNeededBeforeAutomatedMessage": 10,
+  "minutesBetweenMessages": 5,
+  "messages": [
+    {
+      "type": "single",
+      "messages": ["Just a single message."]
+    },
+    {
+      "type": "random",
+      "messages": [
+        "The messages in this list are chosen from at random, maybe they are ^-^",
+        "The messages in this list are chosen from at random, maybe they are not -_-"
+        ]
+    },
+    {
+      "type": "burst",
+      "seconds": 3,
+      "messages": [
+        "These",
+        "messages",
+        "follow",
+        "in",
+        "quick",
+        "succession"
+      ]
+    },
+    {
+      "type": "ordered",
+      "messages": [
+        "These messages are ordered",
+        "And have the same amount of time in between them as single messages",
+        "But are easier to set up"
+      ]
+    }
+  ]
+}
