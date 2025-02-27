@@ -8,6 +8,7 @@ import { logError, logWarning, logInfo, sleep, contains, equals, randomInt, conc
 // Bot file
 const commandProperties = ["name", "reply"];
 const config = loadJSON('./config.json');
+const autoMsgConfig = loadJSON('./automatedmessages.json');
 
 const twitchChatters = [];
 
