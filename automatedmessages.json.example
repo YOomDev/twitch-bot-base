@@ -2,6 +2,7 @@
   "enabled": false,
   "chatsNeededBeforeAutomatedMessage": 10,
   "minutesBetweenMessages": 5,
+  "randomOrder": false,
   "messages": [
     {
       "type": "single",
@@ -12,7 +13,7 @@
       "messages": [
         "The messages in this list are chosen from at random, maybe they are ^-^",
         "The messages in this list are chosen from at random, maybe they are not -_-"
-        ]
+      ]
     },
     {
       "type": "burst",

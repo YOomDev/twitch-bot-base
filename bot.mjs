@@ -241,6 +241,8 @@ async function parseTwitch(channel, userState, message) {
 let runMessages = false; // gets changed by config
 let messagesNeededBeforeAutomatedMessage = 10; // gets changed by config
 let minutesBetweenAutomatedMessages = 5; // gets changed by config
+let randomizedOrder = false; // gets changed by config
+let automatedMessages = []; // gets changed by config
 let messagesSinceLastAutomatedMessage = 0;
 let automatedMessageManager;
 let currentAutomatedMessage = 0;
