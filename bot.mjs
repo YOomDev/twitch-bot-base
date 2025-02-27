@@ -247,8 +247,6 @@ let messagesSinceLastAutomatedMessage = 0;
 let automatedMessageManager;
 let currentAutomatedMessage = 0;
 let hasTimePassedSinceLastAutomatedMessage = true;
-let automatedMessages = [];
-
 
 async function reloadAutomatedMessages() {
     const messageConfig = readFile(`${config.automatedMessagesFolder}config.txt`);
