@@ -287,25 +287,26 @@ async function automatedMessagesManager() {
 async function playAutomatedMessage() {
     if (!runMessages) { return; }
     if (isChatActive()) {
-        if (currentAutomatedMessage >= automatedMessages.length) { currentAutomatedMessage -= automatedMessages.length; }
+        const channel = client.channels[0];
+        while (currentAutomatedMessage >= automatedMessages.length) { currentAutomatedMessage -= automatedMessages.length; }
         const message = automatedMessages[currentAutomatedMessage];
         let lines = readFile(`${config.automatedMessagesFolder}${message.file}.txt`);
         switch (message.type) {
             case "message":
-                sendMessageTwitch(config.twitchChannel, lines[randomInt(lines.length)]);
+                sendMessageTwitch(channel, lines[randomInt(lines.length)]);
                 break;
             case "sequence":
                 for (let i = 0; i < lines.length; i++) {
                     await awaitAutomatedMessageActive();
                     hasTimePassedSinceLastAutomatedMessage = false;
                     messagesSinceLastAutomatedMessage = 0;
-                    sendMessageTwitch(config.twitchChannel, lines[i]);
+                    sendMessageTwitch(channel, lines[i]);
                     if (i < lines.length - 1) { sleep(minutesBetweenAutomatedMessages * 60).then(_ => { hasTimePassedSinceLastAutomatedMessage = true; }); }
                 }
                 break;
             case "list":
                 for (let i = 0; i < lines.length; i++) {
-                    sendMessageTwitch(config.twitchChannel, lines[i]);
+                    sendMessageTwitch(channel, lines[i]);
                     if (i < lines.length - 1) {await sleep(5); }
                 }
                 break;
