@@ -302,10 +302,13 @@ async function playAutomatedMessage() {
         const message = automatedMessages[currentAutomatedMessage];
         let lines = readFile(`${config.automatedMessagesFolder}${message.file}.txt`);
         switch (message.type) {
-            case "message":
+            case "single":
                 sendMessageTwitch(channel, lines[randomInt(lines.length)]);
                 break;
-            case "sequence":
+            case "random":
+
+                break;
+            case "burst":
                 for (let i = 0; i < lines.length; i++) {
                     await awaitAutomatedMessageActive();
                     hasTimePassedSinceLastAutomatedMessage = false;
@@ -314,7 +317,7 @@ async function playAutomatedMessage() {
                     if (i < lines.length - 1) { sleep(minutesBetweenAutomatedMessages * 60).then(_ => { hasTimePassedSinceLastAutomatedMessage = true; }); }
                 }
                 break;
-            case "list":
+            case "ordered":
                 for (let i = 0; i < lines.length; i++) {
                     sendMessageTwitch(channel, lines[i]);
                     if (i < lines.length - 1) {await sleep(5); }
