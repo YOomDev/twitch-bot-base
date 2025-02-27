@@ -8,7 +8,7 @@ import { logError, logWarning, logInfo, logData, sleep, concat, contains, equals
 // Bot file
 const commandProperties = ["name", "reply"];
 const config = loadJSON('./config.json');
-const autoMsgConfig = loadJSON('./automatedmessages.json');
+let autoMsgConfig = loadJSON('./automatedmessages.json');
 
 const twitchChatters = [];
 
@@ -235,7 +235,7 @@ async function parseTwitch(channel, userState, message) {
 }
 
 ////////////////////////
-// Automated messages // // TODO: REFACTOR or REWRITE!
+// Automated messages //
 ////////////////////////
 
 let runMessages = false; // gets changed by config
@@ -249,27 +249,23 @@ let currentAutomatedMessage = 0;
 let hasTimePassedSinceLastAutomatedMessage = true;
 
 async function reloadAutomatedMessages() {
-    const messageConfig = readFile(`${config.automatedMessagesFolder}config.txt`);
-    for (let i = 0; i < messageConfig.length; i++) {
-        let line = messageConfig[i].split(" ");
-        switch (line[0]) {
-            case "message":
-            case "sequence":
-            case "list":
-                if (line.length > 1) {
-                    automatedMessages.push({ type: line[0], file: concat(line, " ", "", 1) });
-                    break;
-                }
-                logError(`Couldn\'t interpret automated message from config line ${i}: ${line}`);
-                break;
-            default:
-                logError(`Couldn\'t interpret automated message from config line ${i}: ${line}`);
-                break;
+    autoMsgConfig = loadJSON('./automatedmessages.json');
+    automatedMessages.slice(0, automatedMessages.length); // Make sure it starts empty
+    for (let i = 0; i < autoMsgConfig.messages.length; i++) {
+        const message = autoMsgConfig.messages[i]
+        if (message.type === "burst") {
+            if (!message.seconds) {
+                logWarning("Message of type burst does not have a seconds variable, defaulting to 5 seconds!");
+                message.seconds = 5;
+            }
         }
+        automatedMessages.push(message);
     }
     runMessages = false;
     await stopAutomatedMessagesManager();
-    automatedMessageManager = automatedMessagesManager(); // Start new messages manager
+
+    // Start new messages manager if there were any messages loaded
+    if (automatedMessages.length > 0) { automatedMessageManager = automatedMessagesManager(); }
 }
 
 async function stopAutomatedMessagesManager() {
@@ -301,27 +297,27 @@ async function playAutomatedMessage() {
         if (randomizedOrder) { currentAutomatedMessage = randomInt(0, automatedMessages.length) }
         while (currentAutomatedMessage >= automatedMessages.length) { currentAutomatedMessage -= automatedMessages.length; }
         const message = automatedMessages[currentAutomatedMessage];
-        let lines = readFile(`${config.automatedMessagesFolder}${message.file}.txt`);
-        switch (message.type) {
+
+        switch (message.type.toLowerCase()) {
             case "single":
-                sendMessageTwitch(channel, lines[randomInt(lines.length)]);
+                if (message.messages.length > 0) { sendMessageTwitch(channel, message.messages[0]); }
                 break;
             case "random":
-
+                if (message.messages.length > 0) { sendMessageTwitch(channel, message.messages[randomInt(message.messages.length)]); }
                 break;
             case "ordered":
-                for (let i = 0; i < lines.length; i++) {
+                for (let i = 0; i < message.messages.length; i++) {
                     await awaitAutomatedMessageActive();
                     hasTimePassedSinceLastAutomatedMessage = false;
                     messagesSinceLastAutomatedMessage = 0;
-                    sendMessageTwitch(channel, lines[i]);
-                    if (i < lines.length - 1) { sleep(minutesBetweenAutomatedMessages * 60).then(_ => { hasTimePassedSinceLastAutomatedMessage = true; }); }
+                    sendMessageTwitch(channel, message.messages[i]);
+                    if (i < message.messages.length - 1) { sleep(minutesBetweenAutomatedMessages * 60).then(_ => { hasTimePassedSinceLastAutomatedMessage = true; }); }
                 }
                 break;
             case "burst":
-                for (let i = 0; i < lines.length; i++) {
-                    sendMessageTwitch(channel, lines[i]);
-                    if (i < lines.length - 1) {await sleep(5); }
+                for (let i = 0; i < message.messages.length; i++) {
+                    sendMessageTwitch(channel, message.messages[i]);
+                    if (i < message.messages.length - 1) { await sleep(message.seconds); }
                 }
                 break;
             default:
