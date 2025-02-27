@@ -91,8 +91,7 @@ client.global = {};
 function setupEvents() {
     client.on('message', (channel, userState, message, self) => {
         if (self) { return; }
-        // line below will be replaced by if statement above this when it works
-        for (let i = 0; i < ignoreUsers.length; i++) { if (equals(ignoreUsers[i].toLowerCase(), userState['display-name'].toString().toLowerCase())) { return; } }
+        for (let i = 0; i < config.ignoreUsers.length; i++) { if (equals(config.ignoreUsers[i].toLowerCase(), userState['display-name'].toString().toLowerCase())) { return; } }
         parseTwitch(channel, userState, message).catch(err => logError(err));
     });
     client.on('clearchat', (channel, self) => {
