@@ -5,6 +5,6 @@ export default {
     async reply(client, channel, userState, params, message) {
         let commandList = [];
         for (let i = 0; i < client.commands.length; i++) { commandList.push(client.commands[i].name); }
-        client.utils.sendChannelMessage(channel, `Possible commands: ${concat(commandList, ", ").toLowerCase()}`)
+        client.utils.sendChannelMessage(channel, `Possible commands: ${concat(commandList, ", ", "!").toLowerCase()}`)
     }
 }
