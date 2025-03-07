@@ -209,7 +209,7 @@ async function parseTwitch(channel, userState, message) {
         let found = false;
         for (let i = 0; i < client.commands.length; i++) {
             if (equals(commandName, client.commands[i].name)) {
-                const command = client.commands[i];
+                const command = client.commands[i].command;
 
                 command.reply(client, channel, userState, params, message);
 
