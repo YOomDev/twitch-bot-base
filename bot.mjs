@@ -86,7 +86,7 @@ client.utils.log = logInfo;
 client.utils.logWarn = logWarning;
 client.utils.logErr = logError;
 client.utils.data = logData;
-client.utils.isAdminLevel = function (userstate, role) { return getAdminLevel(getUserType(userstate)) < getAdminLevel(role); }
+client.utils.isAdminLevel = function (userstate, role) { return getAdminLevel(getUserType(userstate)) >= getAdminLevel(role); }
 client.roles = {};
 client.roles.DEVELOPER   = DEVELOPER;
 client.roles.BROADCASTER = BROADCASTER;
