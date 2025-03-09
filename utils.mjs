@@ -18,7 +18,7 @@ export function equals(first, second) {
 
 export function contains(array, value) { for (let i = 0; i < array.length; i++) { if (equals(array[i], value)) { return true; } } return false; }
 
-export function randomInt(min, max) { return Math.floor(Math.min(+min, +max)) + Math.floor(Math.random() * (Math.max(+min, +max) - Math.min(+min, +max))); }
+export function randomInt(min, max = 0) { return Math.floor(Math.min(+min, +max)) + Math.floor(Math.random() * (Math.max(+min, +max) - Math.min(+min, +max))); }
 
 export function concat(list, separator = "", prefix = "", start = 0, count = list.length) {
     const end = Math.min(start + count, list.length);
