@@ -194,6 +194,7 @@ async function registerCommands() {
 
             // Set a new item in the Collection with the key as the command name and the value as the exported module
             client.commands.push({ name: command.name, command: command });
+            logInfo(`Loaded command '${command.name}'`)
         }
     }
     logInfo("Loaded all possible commands");
