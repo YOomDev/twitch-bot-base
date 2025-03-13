@@ -120,9 +120,9 @@ function setupEvents() {
         sendMessageTwitch(channel, `${tags['system-msg']}`);
         logInfo(`${channel}: ${tags['system-msg']}`);
     });
-    client.on('ban', (channel, msg, something, tags) => {
-        sendMessageTwitch(channel, `Ban on ${channel} for username ${msg}`);
-        logInfo(`${channel}: banned: ${msg}`);
+    client.on('ban', (channel, name, something, tags) => {
+        sendMessageTwitch(channel, `${name} has been banned!`);
+        logInfo(`${channel}: banned: ${name} info?: ${something} tags?: ${tags}`);
     });
     client.on('timeout', (channel, msg, something, duration, tags) => {
         sendMessageTwitch(channel, `Timeout for username ${msg} with a duration of ${duration}`);
