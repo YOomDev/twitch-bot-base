@@ -3,7 +3,7 @@ import path from 'node:path';
 import { client as Client } from 'tmi.js';
 const loadJSON = (path) => JSON.parse(fs.readFileSync(new URL(path, import.meta.url)));
 
-import { logError, logWarning, logInfo, logData, sleep, concat, contains, equals, randomInt } from "./utils.mjs";
+import { logError, logWarning, logInfo, logData, sleep, contains, equals, randomInt } from "./utils.mjs";
 
 // Bot file
 const commandProperties = ["name", "reply"];
@@ -86,7 +86,8 @@ client.utils.log = logInfo;
 client.utils.logWarn = logWarning;
 client.utils.logErr = logError;
 client.utils.data = logData;
-client.utils.isAdminLevel = function (userstate, role) { return getAdminLevel(getUserType(userstate)) >= getAdminLevel(role); }
+client.utils.isFollower = function (userState) {}
+client.utils.isAdminLevel = function (userState, role) { return getAdminLevel(getUserType(userState)) >= getAdminLevel(role); }
 client.roles = {};
 client.roles.DEVELOPER   = DEVELOPER;
 client.roles.BROADCASTER = BROADCASTER;
