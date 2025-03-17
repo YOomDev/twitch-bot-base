@@ -1,7 +1,9 @@
 {
   "token": "token-goes-here",
-  "clientName": "application-id-goes-here",
-  "channel": "guild-id-goes-here",
+  "clientName": "bot-name-goes-here",
+  "channel": "lowercase-streamer-name-goes-here",
+  "roomId": "room-id-number-goes-here",
+  "twitchId": "streamer-user-id-goes-here",
   "commandFolders": [
     "../commands"
   ],
