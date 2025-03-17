@@ -25,6 +25,7 @@ export async function start(cmdProperties = []) {
     ready = false;
     reload();
     if (autoMsgConfig.enabled === true) { reloadAutomatedMessages().catch(_ => {}); }
+    loadFollowers().catch( err => { logError(err); });
     return client;
 }
 
