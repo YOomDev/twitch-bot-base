@@ -4,6 +4,7 @@ import { client as Client } from 'tmi.js';
 const loadJSON = (path) => JSON.parse(fs.readFileSync(new URL(path, import.meta.url)));
 
 import { logError, logWarning, logInfo, logData, sleep, contains, equals, randomInt } from "./utils.mjs";
+import https from "https";
 
 // Bot file
 const commandProperties = ["name", "reply"];
@@ -87,6 +88,7 @@ client.utils.logWarn = logWarning;
 client.utils.logErr = logError;
 client.utils.data = logData;
 client.utils.isFollower = function (userState) {}
+client.utils.getFollowerTime = function () {}
 client.utils.isAdminLevel = function (userState, role) { return getAdminLevel(getUserType(userState)) >= getAdminLevel(role); }
 client.roles = {};
 client.roles.DEVELOPER   = DEVELOPER;
@@ -339,4 +341,60 @@ async function playAutomatedMessage() {
         messagesSinceLastAutomatedMessage = 0;
         sleep(minutesBetweenAutomatedMessages * 60).then(_ => { hasTimePassedSinceLastAutomatedMessage = true; });
     }
+}
+
+///////////////
+// Followers //
+///////////////
+
+const followerData = [];
+const amountPerChunk = 40;
+const secondsPerChunk = 3; // Used to throttle the cache loading of followers so it doesn't disturb the other twitch API usages
+
+async function loadFollowers(pagination = "") {
+    if (pagination.length < 1) {
+        logInfo("Started loading follower cache");
+        console.time('followers');
+    }
+    const options = {
+        hostname: 'api.twitch.tv',
+        path: `/helix/channels/followers?broadcaster_id=${config.roomId}&first=${amountPerChunk}${pagination.length < 1 ? "" : `&after=${pagination}`}`,
+        headers: {
+            Authorization: `Bearer ${config.ttvtoken}`,
+            'Client-ID': config.twitchIds
+        }
+    }
+    let parseData = "";
+    https.get(options, r => {
+        r.setEncoding('utf8');
+        r.on('data', data => { parseData += data; });
+        r.on('end', _ => {
+            const json = JSON.parse(parseData);
+            const pagination = `${json.pagination.cursor}`.toString();
+            if (pagination.length > 10) { sleep(secondsPerChunk).then(_ => loadFollowers(pagination)); } // Only start loading next batch if a new pagination for a batch has been given from the loaded data
+            for (let i = 0; i < json.data.length; i++) {
+                followerData.push({
+                    id: json.data[i].user_id,
+                    name: `${json.data[i].user_name}`,
+                    time: parseTwitchTime(`${json.data[i].followed_at}`)
+                });
+            }
+            if (pagination.length < 1) {
+                console.timeEnd('followers');
+                logInfo("Finished loading follower cache");
+            }
+        });
+    }).on('error', err => { logError(err); });
+}
+
+function parseTwitchTime(timeString) {
+    const parts = timeString.split("T");
+    const dateStr = parts[0].split("-");
+    const timeStr = parts[1].replaceAll("Z", "").split(":");
+    const date = new Date();
+    date.setFullYear(parseInt(dateStr[0]), parseInt(dateStr[1]), parseInt(dateStr[2]));
+    date.setHours(parseInt(timeStr[0]));
+    date.setMinutes(parseInt(timeStr[1]));
+    date.setSeconds(parseInt(timeStr[2]));
+    return date.getTime();
 }
