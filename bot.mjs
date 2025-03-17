@@ -370,7 +370,7 @@ async function loadFollowers(pagination = "") {
         path: `/helix/channels/followers?broadcaster_id=${config.roomId}&first=${amountPerChunk}${pagination.length < 1 ? "" : `&after=${pagination}`}`,
         headers: {
             Authorization: `Bearer ${config.ttvtoken}`,
-            'Client-ID': config.twitchIds
+            'Client-ID': config.twitchId
         }
     }
     let parseData = "";
