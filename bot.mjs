@@ -359,6 +359,7 @@ async function playAutomatedMessage() {
 const followerData = [];
 const amountPerChunk = 40;
 const secondsPerChunk = 3; // Used to throttle the cache loading of followers so it doesn't disturb the other twitch API usages
+let chunk = 0;
 
 async function loadFollowers(pagination = "") {
     if (pagination.length < 1) {
@@ -379,8 +380,10 @@ async function loadFollowers(pagination = "") {
         r.on('data', data => { parseData += data; });
         r.on('end', _ => {
             const json = JSON.parse(parseData);
-            const pagination = `${json.pagination.cursor}`.toString();
-            if (pagination.length > 10) { sleep(secondsPerChunk).then(_ => loadFollowers(pagination)); } // Only start loading next batch if a new pagination for a batch has been given from the loaded data
+            chunk++;
+            logInfo(`Parsing chunk ${chunk}/${Math.ceil(json.total / amountPerChunk)}`);
+            const next = `${json.pagination.cursor}`.toString();
+            if (next.length > 10) { sleep(secondsPerChunk).then(_ => loadFollowers(next)); } // Only start loading next batch if a new pagination for a batch has been given from the loaded data
             for (let i = 0; i < json.data.length; i++) {
                 followerData.push({
                     id: json.data[i].user_id,
@@ -388,7 +391,7 @@ async function loadFollowers(pagination = "") {
                     time: parseTwitchTime(`${json.data[i].followed_at}`)
                 });
             }
-            if (pagination.length < 1) {
+            if (chunk === Math.ceil(json.total / amountPerChunk)) {
                 console.timeEnd('followers');
                 logInfo("Finished loading follower cache");
             }
