@@ -88,8 +88,16 @@ client.utils.log = logInfo;
 client.utils.logWarn = logWarning;
 client.utils.logErr = logError;
 client.utils.data = logData;
-client.utils.isFollower = function (userState) {}
-client.utils.getFollowerTime = function () {}
+client.utils.isFollower = function (userId) {
+    for (let i = 0; i < followerData.length; i++) {
+        if (equals(followerData[i].id, userId)) { return i; }
+    }
+    return -1;
+}
+client.utils.getFollowerTime = function (index) {
+    if (index < 0 || index > followerData.length - 1) { return -1; }
+    return followerData[index].time;
+}
 client.utils.isAdminLevel = function (userState, role) { return getAdminLevel(getUserType(userState)) >= getAdminLevel(role); }
 client.roles = {};
 client.roles.DEVELOPER   = DEVELOPER;
