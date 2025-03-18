@@ -73,7 +73,7 @@ function getAdminLevel(type) {
 }
 
 const client = new Client({
-    options: { debug: true },
+    options: { debug: false },
     connection: { reconnect: true, secure: true },
     identity: {
         username: config.clientName,
