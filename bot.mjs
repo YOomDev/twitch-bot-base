@@ -24,12 +24,19 @@ export async function start(cmdProperties = []) {
     while (!ready) { await sleep(0.25); }
     ready = false;
     reload();
-    if (autoMsgConfig.enabled === true) { reloadAutomatedMessages().catch(_ => {}); }
-    loadFollowers().catch( err => { logError(err); });
     return client;
 }
 
-function reload() { registerCommands(); }
+function reload() {
+    registerCommands().catch(err => { logError(err); });
+    if (autoMsgConfig.enabled === true) { reloadAutomatedMessages().catch(_ => {}); }
+    loadFollowers().catch( err => { logError(err); });
+
+    // Update channel live time and setup schedule to check every so often
+    botStartTime = new Date().getTime();
+    isTwitchChannelLive();
+    setInterval(isTwitchChannelLive, 2 * 60 * 1000);
+}
 
 ////////////////
 // Twitch Bot //
