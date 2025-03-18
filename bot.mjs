@@ -150,7 +150,8 @@ function setupEvents() {
     });
     client.on('ban', (channel, name, something, tags) => {
         sendMessageTwitch(channel, `${name} has been banned!`);
-        logInfo(`${channel}: banned: ${name} info?: ${something} tags?: ${tags}`);
+        logInfo(`${channel}: banned: ${name} info?: ${something} tags:`);
+        logData(tags);
     });
     client.on('timeout', (channel, msg, something, duration, tags) => {
         sendMessageTwitch(channel, `Timeout for username ${msg} with a duration of ${duration}`);
@@ -425,4 +426,24 @@ function parseTwitchTime(timeString) {
     date.setMinutes(parseInt(timeStr[1]));
     date.setSeconds(parseInt(timeStr[2]));
     return date.getTime();
+}
+
+///////////////
+// Live info //
+///////////////
+
+let streamStartTime = 0;
+let botStartTime = 0;
+
+async function isTwitchChannelLive() {
+    const text = (await (await fetch(`https://twitch.tv/${config.channel}`).catch(err => { logError(err); return { text: async function() { return ""; }}})).text()).toString();
+    if (text.length < 1) { return false; } // return early cuz of possible connection error
+    const liveIndex = text.indexOf("\",\"isLiveBroadcast\":true");
+    if (liveIndex > 0) {
+        const findStr = "\"startDate\":\"";
+        streamStartTime = Date.parse(text.substring(text.indexOf(findStr) + findStr.length, liveIndex));
+        return true;
+    }
+    streamStartTime = botStartTime;
+    return false;
 }
