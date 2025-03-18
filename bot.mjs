@@ -437,7 +437,7 @@ let botStartTime = 0;
 
 async function isTwitchChannelLive() {
     const text = (await (await fetch(`https://twitch.tv/${config.channel}`).catch(err => { logError(err); return { text: async function() { return ""; }}})).text()).toString();
-    if (text.length < 1) { return false; } // return early cuz of possible connection error
+    if (text.length < 1) { return false; } // Return early if connection error occurs
     const liveIndex = text.indexOf("\",\"isLiveBroadcast\":true");
     if (liveIndex > 0) {
         const findStr = "\"startDate\":\"";
