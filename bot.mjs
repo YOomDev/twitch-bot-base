@@ -381,7 +381,7 @@ async function playAutomatedMessage() {
 ///////////////
 
 const followerData = [];
-const amountPerChunk = 40;
+const amountPerChunk = 100;
 const secondsPerChunk = 3; // Used to throttle the cache loading of followers so it doesn't disturb the other twitch API usages
 let chunk = 0;
 
