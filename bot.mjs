@@ -453,6 +453,7 @@ async function isTwitchChannelLive() {
         streamStartTime = Date.parse(text.substring(text.indexOf(findStr) + findStr.length, liveIndex));
         return true;
     }
+    if (twitchChatters.length > 0) { twitchChatters.splice(0, twitchChatters); }
     streamStartTime = botStartTime;
     return false;
 }
