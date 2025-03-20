@@ -246,7 +246,9 @@ async function registerCommands() {
 }
 
 async function parseTwitch(channel, userState, message) {
+    const userName = userState['display-name'];
     const userId = userState['user-id'];
+    logInfo(`[${channel}] ${userName}: ${message}`);
     if (message.startsWith(prefix)) {
         const params = message.trim().substring(prefix.length, message.length).split(" ");
         const commandName = params.shift().toLowerCase();
@@ -265,7 +267,7 @@ async function parseTwitch(channel, userState, message) {
             }
         }
         if (!found) {
-            sendMessageTwitch(channel, `Couldn't find the command that you tried to use ${userState['display-name']}...`)
+            sendMessageTwitch(channel, `Couldn't find the command that you tried to use ${userName}...`)
         }
     } else {
         if (!contains(twitchChatters, userId)) {
@@ -273,7 +275,7 @@ async function parseTwitch(channel, userState, message) {
             // if (hasURL(message)) { return; }
             twitchChatters.push(userId);
             const lines = ["Welcome {USER}!"]; // TODO: replace temporary message
-            sendMessageTwitch(channel, lines[randomInt(lines.length)].replaceAll("{USER}", userState['display-name']));
+            sendMessageTwitch(channel, lines[randomInt(lines.length)].replaceAll("{USER}", userName));
         }
         messagesSinceLastAutomatedMessage++;
     }
