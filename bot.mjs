@@ -117,11 +117,11 @@ client.utils.getTimeDifference = function (milliFrom, milliTo = new Date().getTi
 }
 client.utils.isAdminLevel = function (userState, role) { return getAdminLevel(getUserType(userState)) >= getAdminLevel(role); }
 client.replies = {};
-client.replies.BRC_NEEDED = "you do not have the correct permission for this command, you need to be at least a Broadcaster to use this";
-client.replies.MOD_NEEDED = "you do not have the correct permission for this command, you need to be at least a Moderator to use this";
-client.replies.SUB_NEEDED = "you do not have the correct permission for this command, you need to be at least a Subscriber to use this";
-client.replies.PRI_NEEDED = "you do not have the correct permission for this command, you need to be at least a Prime Subscriber to use this";
-client.replies.FOL_NEEDED = "you do not have the correct permission for this command, you need to be at least a Follower to use this";
+client.replies.BRC_NEEDED = "You do not have the correct permission for this command, you need to be at least a Broadcaster to use this";
+client.replies.MOD_NEEDED = "You do not have the correct permission for this command, you need to be at least a Moderator to use this";
+client.replies.SUB_NEEDED = "You do not have the correct permission for this command, you need to be at least a Subscriber to use this";
+client.replies.PRI_NEEDED = "You do not have the correct permission for this command, you need to be at least a Prime Subscriber to use this";
+client.replies.FOL_NEEDED = "You do not have the correct permission for this command, you need to be at least a Follower to use this";
 client.roles = {};
 client.roles.DEVELOPER   = DEVELOPER;
 client.roles.BROADCASTER = BROADCASTER;
