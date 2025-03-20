@@ -405,7 +405,7 @@ async function loadFollowers(pagination = "") {
         r.on('end', _ => {
             const json = JSON.parse(parseData);
             chunk++;
-            logInfo(`Parsing chunk ${chunk}/${Math.ceil(json.total / amountPerChunk)}`);
+            logInfo(`Parsing chunk ${chunk}/${Math.max(1, Math.ceil(json.total / amountPerChunk))}`);
             const next = `${json.pagination.cursor}`.toString();
             if (next.length > 10) { sleep(secondsPerChunk).then(_ => loadFollowers(next)); } // Only start loading next batch if a new pagination for a batch has been given from the loaded data
             for (let i = 0; i < json.data.length; i++) {
