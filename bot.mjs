@@ -443,6 +443,8 @@ function parseTwitchTime(timeString) {
 
 let streamStartTime = 0;
 let botStartTime = 0;
+let attempts = 0;
+const attemptsNeeded = 10;
 
 async function isTwitchChannelLive() {
     const text = (await (await fetch(`https://twitch.tv/${config.channel}`).catch(err => { logError(err); return { text: async function() { return ""; }}})).text()).toString();
@@ -453,7 +455,13 @@ async function isTwitchChannelLive() {
         streamStartTime = Date.parse(text.substring(text.indexOf(findStr) + findStr.length, liveIndex));
         return true;
     }
-    if (twitchChatters.length > 0) { twitchChatters.splice(0, twitchChatters.length); }
+    if (twitchChatters.length > 0) {
+        attempts++;
+        if (attempts >= attemptsNeeded) {
+            twitchChatters.splice(0, twitchChatters.length);
+            attempts = 0;
+        }
+    }
     streamStartTime = botStartTime;
     return false;
 }
