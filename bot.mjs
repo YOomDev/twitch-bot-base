@@ -134,6 +134,7 @@ client.global = {};
 
 function setupEvents() {
     client.on('message', (channel, userState, message, self) => {
+        logInfo(`[${channel}] ${userState['display-name']}: ${message}`);
         if (self) { return; }
         for (let i = 0; i < config.ignoreUsers.length; i++) { if (equals(config.ignoreUsers[i].toLowerCase(), userState['display-name'].toString().toLowerCase())) { return; } }
         parseTwitch(channel, userState, message).catch(err => logError(err));
@@ -248,7 +249,6 @@ async function registerCommands() {
 async function parseTwitch(channel, userState, message) {
     const userName = userState['display-name'];
     const userId = userState['user-id'];
-    logInfo(`[${channel}] ${userName}: ${message}`);
     if (message.startsWith(prefix)) {
         const params = message.trim().substring(prefix.length, message.length).split(" ");
         const commandName = params.shift().toLowerCase();
