@@ -1,6 +1,6 @@
 import fs from "node:fs";
 
-export function getTimeString(date = new Date()) { return `${date.getDate()}-${date.getMonth()}-${date.getFullYear()} ${date.toLocaleTimeString()}`.toString(); }
+export function getTimeString(date = new Date()) { return `${date.getDate()}-${1 + date.getMonth()}-${date.getFullYear()} ${date.toLocaleTimeString()}`.toString(); }
 
 // Log functions
 export function logError(err)   { console.error(`[${getTimeString()}] Twitch ERROR:\t`, err ); }
