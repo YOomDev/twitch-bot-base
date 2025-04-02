@@ -406,6 +406,8 @@ async function loadFollowers(pagination = "") {
         r.on('data', data => { parseData += data; });
         r.on('end', _ => {
             const json = JSON.parse(parseData);
+            if (json.status) { if (json.status === 401) { logError("Token expired!"); return; } }
+            if (json === undefined) { logWarning("Failed to parse follower data:"); logData(parseData); return; }
             chunk++;
             logInfo(`Parsing chunk ${chunk}/${Math.max(1, Math.ceil(json.total / amountPerChunk))}`);
             const next = `${json.pagination.cursor}`.toString();
