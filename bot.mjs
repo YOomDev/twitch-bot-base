@@ -107,17 +107,6 @@ client.utils.getFollowerTime = function (index) {
     if (index < 0 || index > followerData.length - 1) { return -1; }
     return followerData[index].time;
 }
-
-client.utils.getTimeDifference = function (milliFrom, milliTo = new Date().getTime(), showMinutes = false) {
-    const totalMinutes = Math.floor((milliTo - milliFrom) / 1000 / 60);
-    const totalHours = Math.floor(totalMinutes / 60);
-    const totalDays = Math.floor(totalHours / 24);
-    const years = Math.floor(totalDays / 365);
-    const days = totalDays - (years * 365);
-    const hours = totalHours - (totalDays * 24);
-    const minutes = totalMinutes - (totalHours * 60);
-    return `${years > 0 ? `${years} years and ` : ``}${days > 0 ? `${days} days and ` : ``}${hours} hours${showMinutes ? (minutes > 0 ? ` and ${minutes} minutes` : ``) : ``}`;
-}
 client.utils.isAdminLevel = function (userState, role) { return getAdminLevel(getUserType(userState)) >= getAdminLevel(role); }
 client.replies = {};
 client.replies.BRC_NEEDED = "You do not have the correct permission for this command, you need to be at least a Broadcaster to use this";
