@@ -33,7 +33,7 @@ function reload() {
     loadFollowers().catch( err => { logError(err); });
 
     // Update channel live time and setup schedule to check every so often
-    botStartTime = new Date().getTime();
+    client.utils.startTime = new Date().getTime();
     isTwitchChannelLive();
     setInterval(isTwitchChannelLive, 2 * 60 * 1000);
 }
@@ -95,6 +95,8 @@ client.utils.log = logInfo;
 client.utils.logWarn = logWarning;
 client.utils.logErr = logError;
 client.utils.data = logData;
+client.utils.streamStartTime = 0;
+client.utils.startTime = 0;
 client.utils.isFollower = function (userId) {
     for (let i = 0; i < followerData.length; i++) {
         if (equals(followerData[i].id, userId)) { return i; }
@@ -105,6 +107,7 @@ client.utils.getFollowerTime = function (index) {
     if (index < 0 || index > followerData.length - 1) { return -1; }
     return followerData[index].time;
 }
+
 client.utils.getTimeDifference = function (milliFrom, milliTo = new Date().getTime(), showMinutes = false) {
     const totalMinutes = Math.floor((milliTo - milliFrom) / 1000 / 60);
     const totalHours = Math.floor(totalMinutes / 60);
@@ -131,6 +134,47 @@ client.roles.SUBSCRIBER  = SUBSCRIBER;
 client.roles.PRIME       = PRIME;
 client.roles.VIEWER      = VIEWER;
 client.global = {};
+
+function refreshTokens() {
+
+    /* request:
+    curl -X POST https://id.twitch.tv/oauth2/token \
+-H '' \
+-d 'grant_type=refresh_token&refresh_token=gdw3k62zpqi0kw01escg7zgbdhtxi6hm0155tiwcztxczkx17&client_id=<your client id goes here>&client_secret=<your client secret goes here>'
+
+
+    expected response:
+        {
+  "access_token": "1ssjqsqfy6bads1ws7m03gras79zfr",
+  "refresh_token": "eyJfMzUtNDU0OC4MWYwLTQ5MDY5ODY4NGNlMSJ9%asdfasdf=",
+  "scope": [
+    "channel:read:subscriptions",
+    "channel:manage:polls" // And other scopes ofcourse
+  ],
+  "token_type": "bearer"
+}
+     */
+
+    const options = {
+        hostname: 'api.twitch.tv',
+        path: '/oauth2/token',
+        headers: {
+            grant_type: "refresh_token",
+            refresh_token: `${config.refreshToken}`,
+            client_id: `${client.clientId}`,
+            client_secret: `${config.secret}`,
+            'Content-Type': "application/x-www-form-urlencoded"
+        }
+    }
+    let responsetext = "";
+    const data = https.get(options, r => {
+        r.setEncoding('utf8');
+        r.on('data', data => { responsetext = responsetext + data; });
+        r.on('end', _ => { return responsetext; });
+    }).on('error', err => { logError(err); return "An error occurred trying to process this command."; });
+
+    // See if json parse succeeds, if not error occured
+}
 
 function setupEvents() {
     client.on('message', (channel, userState, message, self) => {
@@ -443,8 +487,6 @@ function parseTwitchTime(timeString) {
 // Live info //
 ///////////////
 
-let streamStartTime = 0;
-let botStartTime = 0;
 let attempts = 0;
 const attemptsNeeded = 10;
 
@@ -454,7 +496,8 @@ async function isTwitchChannelLive() {
     const liveIndex = text.indexOf("\",\"isLiveBroadcast\":true");
     if (liveIndex > 0) {
         const findStr = "\"startDate\":\"";
-        streamStartTime = Date.parse(text.substring(text.indexOf(findStr) + findStr.length, liveIndex));
+        client.utils.streamStartTime = Date.parse(text.substring(text.indexOf(findStr) + findStr.length, liveIndex));
+        attempts = 0;
         return true;
     }
     if (twitchChatters.length > 0) {
@@ -464,6 +507,6 @@ async function isTwitchChannelLive() {
             attempts = 0;
         }
     }
-    streamStartTime = botStartTime;
+    client.utils.streamStartTime = client.utils.startTime;
     return false;
 }
