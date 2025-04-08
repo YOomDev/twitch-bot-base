@@ -97,15 +97,28 @@ client.utils.logErr = logError;
 client.utils.data = logData;
 client.utils.streamStartTime = 0;
 client.utils.startTime = 0;
-client.utils.isFollower = function (userId) {
-    for (let i = 0; i < followerData.length; i++) {
-        if (equals(followerData[i].id, userId)) { return i; }
+client.utils.isFollower = function (userId, type = "") {
+    switch (type.toLowerCase()) {
+        case 'name':
+            for (let i = 0; i < followerData.length; i++) {
+                if (equals(followerData[i].name.toLowerCase(), userId.toLowerCase())) { return i; }
+            }
+            break;
+        default:
+            for (let i = 0; i < followerData.length; i++) {
+                if (equals(followerData[i].id, userId)) { return i; }
+            }
+            break;
     }
     return -1;
 }
 client.utils.getFollowerTime = function (index) {
     if (index < 0 || index > followerData.length - 1) { return -1; }
     return followerData[index].time;
+}
+client.utils.getFollowerName = function (index) {
+    if (index < 0 || index > followerData.length - 1) { return ""; }
+    return followerData[index].name;
 }
 client.utils.isAdminLevel = function (userState, role) { return getAdminLevel(getUserType(userState)) >= getAdminLevel(role); }
 client.replies = {};
