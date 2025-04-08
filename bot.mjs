@@ -277,7 +277,7 @@ async function registerCommands() {
             for (const alias of aliases) {
                 client.commands.push({ name: alias, command: command });
             }
-            logInfo(`Loaded command '${command.name}'${!!aliases ? ` with aliases ['${concat(aliases, '\', \'')}']` : ''}!`);
+            logInfo(`Loaded command '${command.name}'${(aliases.length > 0) ? ` with aliases ['${concat(aliases, '\', \'')}']` : ''}!`);
         }
     }
     logInfo("Loaded all possible commands");
