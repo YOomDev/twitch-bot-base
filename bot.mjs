@@ -3,7 +3,7 @@ import path from 'node:path';
 import { client as Client } from 'tmi.js';
 const loadJSON = (path) => JSON.parse(fs.readFileSync(new URL(path, import.meta.url)));
 
-import { logError, logWarning, logInfo, logData, sleep, contains, equals, randomInt } from "./utils.mjs";
+import {logError, logWarning, logInfo, logData, sleep, contains, equals, randomInt, concat} from "./utils.mjs";
 import https from "https";
 
 // Bot file
@@ -273,7 +273,11 @@ async function registerCommands() {
 
             // Set a new item in the Collection with the key as the command name and the value as the exported module
             client.commands.push({ name: command.name, command: command });
-            logInfo(`Loaded command '${command.name}'`)
+            const aliases = command.aliases || [];
+            for (const alias of aliases) {
+                client.commands.push({ name: alias, command: command });
+            }
+            logInfo(`Loaded command '${command.name}'${!!aliases ? ` with aliases ['${concat(aliases, '\', \'')}']` : ''}!`);
         }
     }
     logInfo("Loaded all possible commands");
