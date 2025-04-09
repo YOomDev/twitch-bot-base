@@ -43,7 +43,7 @@ function reload() {
 ////////////////
 
 // Roles
-const DEVELOPER   = "Dev"
+const DEVELOPER   = "Dev";
 const BROADCASTER = "Broadcaster";
 const MODERATOR   = "Moderator";
 const VIP         = "VIP";
