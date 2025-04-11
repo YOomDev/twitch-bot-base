@@ -331,6 +331,50 @@ async function parseTwitch(channel, userState, message) {
     }
 }
 
+////////////////
+// Moderation //
+////////////////
+
+function clearChat() {
+    const options = {
+        hostname: 'api.twitch.tv',
+        path: `/helix/moderation/chat?broadcaster_id=${config.roomId}&moderator_id=${client.clientId}`,
+        headers: {
+            Authorization: `Bearer ${config.ttvtoken}`,
+            'Client-ID': config.twitchId
+        }
+    }
+    let response = "";
+    https.get(options, r => {
+        r.setEncoding('utf8');
+        r.on('data', data => { response += data; });
+        r.on('end', _ => {
+            logInfo('chat clear response from server:');
+            logData(response);
+        });
+    }).on('error', err => { logError(err); });
+}
+
+function removeMessage(messageId) {
+    const options = {
+        hostname: 'api.twitch.tv',
+        path: `/helix/moderation/chat?broadcaster_id=${config.roomId}&moderator_id=${client.clientId}&message_id=${messageId}`,
+        headers: {
+            Authorization: `Bearer ${config.ttvtoken}`,
+            'Client-ID': config.twitchId
+        }
+    }
+    let response = "";
+    https.get(options, r => {
+        r.setEncoding('utf8');
+        r.on('data', data => { response += data; });
+        r.on('end', _ => {
+            logInfo('remove single chat message response from server:');
+            logData(response);
+        });
+    }).on('error', err => { logError(err); });
+}
+
 ////////////////////////
 // Automated messages //
 ////////////////////////
