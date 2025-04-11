@@ -3,7 +3,7 @@ import path from 'node:path';
 import { client as Client } from 'tmi.js';
 const loadJSON = (path) => JSON.parse(fs.readFileSync(new URL(path, import.meta.url)));
 
-import {logError, logWarning, logInfo, logData, sleep, contains, equals, randomInt, concat} from "./utils.mjs";
+import { logError, logWarning, logInfo, logData, sleep, contains, equals, randomInt, concat } from "./utils.mjs";
 import https from "https";
 
 // Bot file
@@ -42,40 +42,21 @@ function reload() {
 // Twitch Bot //
 ////////////////
 
-// Roles
-const DEVELOPER   = "Dev";
-const BROADCASTER = "Broadcaster";
-const MODERATOR   = "Moderator";
-const VIP         = "VIP";
-const SUBSCRIBER  = "Subscriber";
-const PRIME       = "Prime sub";
-const VIEWER      = "Viewer";
-
-const adminLevels = [
-    VIEWER,
-    PRIME,
-    SUBSCRIBER,
-    VIP,
-    MODERATOR,
-    BROADCASTER,
-    DEVELOPER
-];
-
 function getUserType(userState) {
-    if (equals(userState.username, config.superuserName)) { return DEVELOPER; }
-    if (userState.badges) { if (userState.badges['broadcaster']) { return BROADCASTER; } }
-    if (userState.mod) { return MODERATOR  ; }
-    if (userState.badges) { if (userState.badges['vip']) { return VIP; } }
-    if (userState.subscriber) { return SUBSCRIBER ; }
-    if (userState.badges) { if (userState.badges['premium']) { return PRIME; } }
+    if (equals(userState.username, config.superuserName))         { return client.roles.DEVELOPER  ; }
+    if (userState.badges     && userState.badges['broadcaster'] ) { return client.roles.BROADCASTER; }
+    if (userState.mod                                           ) { return client.roles.MODERATOR  ; }
+    if (userState.badges     && userState.badges['vip']         ) { return client.roles.VIP        ; }
+    if (userState.subscriber                                    ) { return client.roles.SUBSCRIBER ; }
+    if (userState.badges     && userState.badges['premium']     ) { return client.roles.PRIME      ; }
     logWarning("No role determined from:");
     logData(userState.badges);
-    return VIEWER;
+    return client.roles.VIEWER;
 }
 
 function getAdminLevel(type) {
-    for (let i = 0; i < adminLevels.length; ++i) { if (type === adminLevels[i]) { return i; } }
-    logWarning(`No admin level found for type: ${type}`);
+    const index = client.adminLevels.indexOf(type);
+    if (index < 1) { logWarning(`No admin level found for type: ${type}`); }
     return -1;
 }
 
@@ -89,12 +70,13 @@ const client = new Client({
     channels: [`#${config.channel}`]
 });
 client.commands = [];
-client.utils = {};
-client.utils.sendChannelMessage = sendMessageTwitch;
-client.utils.log = logInfo;
-client.utils.logWarn = logWarning;
-client.utils.logErr = logError;
-client.utils.data = logData;
+client.utils = {
+    log:     logInfo,
+    logWarn: logWarning,
+    logErr:  logError,
+    data:    logData,
+    sendChannelMessage: sendMessageTwitch,
+};
 client.utils.streamStartTime = 0;
 client.utils.startTime = 0;
 client.utils.isFollower = function (userId, type = "") {
@@ -120,21 +102,35 @@ client.utils.getFollowerName = function (index) {
     if (index < 0 || index > followerData.length - 1) { return ""; }
     return followerData[index].name;
 }
-client.utils.isAdminLevel = function (userState, role) { return getAdminLevel(getUserType(userState)) >= getAdminLevel(role); }
-client.replies = {};
-client.replies.BRC_NEEDED = "You do not have the correct permission for this command, you need to be at least a Broadcaster to use this";
-client.replies.MOD_NEEDED = "You do not have the correct permission for this command, you need to be at least a Moderator to use this";
-client.replies.SUB_NEEDED = "You do not have the correct permission for this command, you need to be at least a Subscriber to use this";
-client.replies.PRI_NEEDED = "You do not have the correct permission for this command, you need to be at least a Prime Subscriber to use this";
-client.replies.FOL_NEEDED = "You do not have the correct permission for this command, you need to be at least a Follower to use this";
-client.roles = {};
-client.roles.DEVELOPER   = DEVELOPER;
-client.roles.BROADCASTER = BROADCASTER;
-client.roles.MODERATOR   = MODERATOR;
-client.roles.VIP         = VIP;
-client.roles.SUBSCRIBER  = SUBSCRIBER;
-client.roles.PRIME       = PRIME;
-client.roles.VIEWER      = VIEWER;
+client.utils.isAdminLevel = function (userState, role) {
+    return getAdminLevel(getUserType(userState)) >= getAdminLevel(role);
+}
+client.replies = {
+    BRC_NEEDED: "You do not have the correct permission for this command, you need to be at least a Broadcaster to use this",
+    MOD_NEEDED: "You do not have the correct permission for this command, you need to be at least a Moderator to use this",
+    SUB_NEEDED: "You do not have the correct permission for this command, you need to be at least a Subscriber to use this",
+    PRI_NEEDED: "You do not have the correct permission for this command, you need to be at least a Prime Subscriber to use this",
+    FOL_NEEDED: "You do not have the correct permission for this command, you need to be at least a Follower to use this",
+    ARG_NEEDED: "Not enough arguments given.",
+};
+client.roles = {
+    VIEWER:      'Viewer',
+    PRIME:       'Prime',
+    SUBSCRIBER:  'Subscriber',
+    VIP:         'VIP',
+    MODERATOR:   'Moderator',
+    BROADCASTER: 'Broadcaster',
+    DEVELOPER:   'Dev'
+};
+client.adminLevels = [
+    client.roles.VIEWER,
+    client.roles.PRIME,
+    client.roles.SUBSCRIBER,
+    client.roles.VIP,
+    client.roles.MODERATOR,
+    client.roles.BROADCASTER,
+    client.roles.DEVELOPER
+];
 client.global = {};
 
 function refreshTokens() {
