@@ -522,7 +522,7 @@ function parseTwitchTime(timeString) {
     const dateStr = parts[0].split("-");
     const timeStr = parts[1].replaceAll("Z", "").split(":");
     const date = new Date();
-    date.setFullYear(parseInt(dateStr[0]), parseInt(dateStr[1]), parseInt(dateStr[2]));
+    date.setFullYear(parseInt(dateStr[0]), parseInt(dateStr[1])-1, parseInt(dateStr[2]));
     date.setHours(parseInt(timeStr[0]));
     date.setMinutes(parseInt(timeStr[1]));
     date.setSeconds(parseInt(timeStr[2]));
