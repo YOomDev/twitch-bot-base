@@ -551,6 +551,7 @@ async function isTwitchChannelLive() {
         if (attempts >= attemptsNeeded) {
             twitchChatters.splice(0, twitchChatters.length);
             attempts = 0;
+            logInfo(`Stream could not be confirmed to be live ${attemptsNeeded} times, resetting current chatters`)
         }
     }
     client.utils.streamStartTime = client.utils.startTime;
