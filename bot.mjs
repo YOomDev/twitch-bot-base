@@ -545,7 +545,7 @@ async function isTwitchChannelLive() {
         client.utils.streamStartTime = Date.parse(text.substring(text.indexOf(findStr) + findStr.length, liveIndex));
         attempts = 0;
         return true;
-    }
+    } else { logWarning(`No live detected in fetch request, parsed response: ${text}`); }
     attempts++;
     if (attempts >= attemptsNeeded) {
         if (twitchChatters.length > 0) { twitchChatters.splice(0, twitchChatters.length); }
