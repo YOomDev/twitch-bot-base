@@ -546,14 +546,13 @@ async function isTwitchChannelLive() {
         attempts = 0;
         return true;
     }
-    if (twitchChatters.length > 0) {
-        attempts++;
-        if (attempts >= attemptsNeeded) {
-            twitchChatters.splice(0, twitchChatters.length);
-            attempts = 0;
-            logInfo(`Stream could not be confirmed to be live ${attemptsNeeded} times, resetting current chatters`)
-        }
+    attempts++;
+    if (attempts >= attemptsNeeded) {
+        if (twitchChatters.length > 0) { twitchChatters.splice(0, twitchChatters.length); }
+        attempts = 0;
+        logInfo(`Stream could not be confirmed to be live ${attemptsNeeded} times, resetting current chatters`);
+        client.utils.streamStartTime = client.utils.startTime;
+        return false;
     }
-    client.utils.streamStartTime = client.utils.startTime;
-    return false;
+    return !(client.utils.streamStartTime === client.utils.startTime);
 }
