@@ -112,6 +112,9 @@ client.replies = {
     PRI_NEEDED: "You do not have the correct permission for this command, you need to be at least a Prime Subscriber to use this",
     FOL_NEEDED: "You do not have the correct permission for this command, you need to be at least a Follower to use this",
     ARG_NEEDED: "Not enough arguments given.",
+    INVALID_NUMBER: "An invalid number has been given as an argument.",
+    INVALID_ARGUMENT: "An invalid argument has been given.",
+    INVALID_SUBCOMMAND: "An invalid subcommand has been given.",
 };
 client.roles = {
     VIEWER:      'Viewer',
