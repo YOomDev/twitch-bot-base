@@ -35,7 +35,7 @@ function reload() {
     // Update channel live time and setup schedule to check every so often
     client.utils.startTime = new Date().getTime();
     isTwitchChannelLive();
-    setInterval(isTwitchChannelLive, 2 * 60 * 1000);
+    setInterval(isTwitchChannelLive, 15 * 60 * 1000);
 }
 
 ////////////////
@@ -536,17 +536,20 @@ function parseTwitchTime(timeString) {
 // Live info //
 ///////////////
 
-let attempts = 0;
-const attemptsNeeded = 10;
-
 async function isTwitchChannelLive() {
-    const text = (await (await fetch(`https://twitch.tv/${config.channel}`).catch(err => { logError(err); return { text: async function() { return ""; }}})).text()).toString();
-    if (text.length < 1) { return false; } // Return early if connection error occurs
-    const liveIndex = text.indexOf("\",\"isLiveBroadcast\":true");
-    if (liveIndex > 0) {
-        const findStr = "\"startDate\":\"";
-        client.utils.streamStartTime = Date.parse(text.substring(text.indexOf(findStr) + findStr.length, liveIndex));
-        attempts = 0;
+    const channel = config.channel;
+    const response = await fetch(`https://api.twitch.tv/helix/streams?user_login=${channel}`, {
+        method: 'GET',
+        headers: {
+            'Client-ID': `${config.twitchId}`,
+            'Authorization': `Bearer ${config.ttvtoken}`
+        }
+    });
+    if (!response.ok) { logWarning(`Could not fetch isLive status! http response: ${response.status}`); logData(response); return; }
+    const json = await response.json();
+    if (json.data.length > 0) {
+        logInfo(`Channel ${channel} just went live.`);
+        client.utils.streamStartTime = new Date(json.data[0].started_at).getTime();
         return true;
     }
     attempts++;
