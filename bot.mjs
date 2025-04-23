@@ -378,7 +378,7 @@ function removeMessage(messageId) {
 // Automated messages //
 ////////////////////////
 
-let runMessages = false; // gets changed by config
+let runMessages = false;
 let messagesNeededBeforeAutomatedMessage = 10; // gets changed by config
 let minutesBetweenAutomatedMessages = 5; // gets changed by config
 let randomizedOrder = false; // gets changed by config
@@ -391,8 +391,11 @@ let hasTimePassedSinceLastAutomatedMessage = true;
 async function reloadAutomatedMessages() {
     autoMsgConfig = loadJSON('./automatedmessages.json');
     automatedMessages.slice(0, automatedMessages.length); // Make sure it starts empty
+    messagesNeededBeforeAutomatedMessage = autoMsgConfig.chatsNeededBeforeAutomatedMessage < 1 ? messagesNeededBeforeAutomatedMessage : autoMsgConfig.chatsNeededBeforeAutomatedMessage;
+    minutesBetweenAutomatedMessages = autoMsgConfig.minutesBetweenMessages < 1 ? minutesBetweenAutomatedMessages : autoMsgConfig.minutesBetweenMessages;
+    randomizedOrder = autoMsgConfig.randomOrder || false;
     for (let i = 0; i < autoMsgConfig.messages.length; i++) {
-        const message = autoMsgConfig.messages[i]
+        const message = autoMsgConfig.messages[i];
         if (message.type === "burst") {
             if (!message.seconds) {
                 logWarning("Message of type burst does not have a seconds variable, defaulting to 5 seconds!");
@@ -405,7 +408,7 @@ async function reloadAutomatedMessages() {
     await stopAutomatedMessagesManager();
 
     // Start new messages manager if there were any messages loaded
-    if (automatedMessages.length > 0) { automatedMessageManager = automatedMessagesManager(); }
+    if (automatedMessages.length > 0 && autoMsgConfig.enabled) { automatedMessageManager = automatedMessagesManager(); }
 }
 
 async function stopAutomatedMessagesManager() {
@@ -551,14 +554,9 @@ async function isTwitchChannelLive() {
         logInfo(`Channel ${channel} just went live.`);
         client.utils.streamStartTime = new Date(json.data[0].started_at).getTime();
         return true;
-    }
-    attempts++;
-    if (attempts >= attemptsNeeded) {
-        if (twitchChatters.length > 0) { twitchChatters.splice(0, twitchChatters.length); }
-        attempts = 0;
-        logInfo(`Stream could not be confirmed to be live ${attemptsNeeded} times, resetting current chatters`);
+    } else {
+        logInfo(`Channel ${channel} just went offline.`);
         client.utils.streamStartTime = client.utils.startTime;
         return false;
     }
-    return !(client.utils.streamStartTime === client.utils.startTime);
 }
