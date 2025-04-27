@@ -98,6 +98,7 @@ client.utils.getFollowerTime = function (index) {
     if (index < 0 || index > followerData.length - 1) { return -1; }
     return followerData[index].time;
 }
+client.utils.getFollowerCount = function () { return followerData.length; }
 client.utils.getFollowerName = function (index) {
     if (index < 0 || index > followerData.length - 1) { return ""; }
     return followerData[index].name;
