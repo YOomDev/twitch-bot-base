@@ -106,9 +106,7 @@ client.utils.getFollowerName = function (index) {
 const userDataCache = [];
 client.utils.getAccountAge = async function (username) {
     // See if user is already cached
-    for (let i = 0; i < userDataCache.length; i++) {
-        if (equals(userDataCache[i].name.toLowerCase(), username.toLowerCase())) { return userDataCache[i].created_at; } // TODO: return correct account age timestamp
-    }
+    for (let i = 0; i < userDataCache.length; i++) { if (equals(userDataCache[i].name.toLowerCase(), username.toLowerCase())) { return userDataCache[i].created_at; } }
 
     // If not cached, fetch from api and store in cache
     const url = `https://api.twitch.tv/helix/users?login=${username}`;
