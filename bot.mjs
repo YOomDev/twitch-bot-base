@@ -113,7 +113,7 @@ client.utils.getAccountAge = async function (username) {
     const options = {
         method: 'GET',
         headers: {
-            'Client-ID': config.clientId,
+            'Client-ID': config.twitchId,
             'Authorization': `Bearer ${config.ttvtoken}`
         }
     };
