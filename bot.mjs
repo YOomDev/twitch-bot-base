@@ -106,7 +106,7 @@ client.utils.getFollowerName = function (index) {
 const userDataCache = [];
 client.utils.getAccountAge = async function (username) {
     // See if user is already cached
-    for (let i = 0; i < userDataCache.length; i++) { if (equals(userDataCache[i].name.toLowerCase(), username.toLowerCase())) { return userDataCache[i].created_at; } }
+    for (let i = 0; i < userDataCache.length; i++) { if (equals(userDataCache[i].display_name.toLowerCase(), username.toLowerCase())) { return new Date(userDataCache[i].created_at).getTime(); } }
 
     // If not cached, fetch from api and store in cache
     const url = `https://api.twitch.tv/helix/users?login=${username}`;
@@ -126,7 +126,7 @@ client.utils.getAccountAge = async function (username) {
     const data = await response.json();
     if (!data.data || data.data.length < 1) { logWarning('Error parsing json from account age'); return -1; }
     userDataCache.push(data.data[0]);
-    return data.data[0].created_at;
+    return new Date(data.data[0].created_at).getTime();
 }
 client.utils.isAdminLevel = function (userState, role) {
     return getAdminLevel(getUserType(userState)) >= getAdminLevel(role);
