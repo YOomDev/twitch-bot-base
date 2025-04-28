@@ -124,7 +124,7 @@ client.utils.getAccountAge = async function (username) {
         return -1;
     }
     const data = await response.json();
-    if (!data.data || data.data.length < 1) { logWarning('error parsing json fomr account age'); return -1; }
+    if (!data.data || data.data.length < 1) { logWarning('Error parsing json from account age'); return -1; }
     userDataCache.push(data.data[0]);
     return data.data[0].created_at;
 }
