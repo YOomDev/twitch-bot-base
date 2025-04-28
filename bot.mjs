@@ -103,6 +103,33 @@ client.utils.getFollowerName = function (index) {
     if (index < 0 || index > followerData.length - 1) { return ""; }
     return followerData[index].name;
 }
+const userDataCache = [];
+client.utils.getAccountAge = async function (username) {
+    // See if user is already cached
+    for (let i = 0; i < userDataCache.length; i++) {
+        if (equals(userDataCache[i].name.toLowerCase(), username.toLowerCase())) { return userDataCache[i].created_at; } // TODO: return correct account age timestamp
+    }
+
+    // If not cached, fetch from api and store in cache
+    const url = `https://api.twitch.tv/helix/users?login=${username}`;
+    const options = {
+        method: 'GET',
+        headers: {
+            'Client-ID': config.clientId,
+            'Authorization': `Bearer ${config.ttvtoken}`
+        }
+    };
+    const response = await fetch(url, options);
+    if (!response.ok) {
+        logWarning(`Could not fetch account info! http response: ${response.status}`);
+        logData(response);
+        return -1;
+    }
+    const data = await response.json();
+    if (!data.data || data.data.length < 1) { logWarning('error parsing json fomr account age'); return -1; }
+    userDataCache.push(data.data[0]);
+    return data.data[0].created_at;
+}
 client.utils.isAdminLevel = function (userState, role) {
     return getAdminLevel(getUserType(userState)) >= getAdminLevel(role);
 }
