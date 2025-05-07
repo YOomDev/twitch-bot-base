@@ -31,6 +31,7 @@ function reload() {
     registerCommands().catch(err => { logError(err); });
     if (autoMsgConfig.enabled === true) { reloadAutomatedMessages().catch(_ => {}); }
     loadFollowers().catch( err => { logError(err); });
+    setInterval(loadFollowers, 4 * 60* 60 * 1000); // TODO: temporary 4h interval follower reload until the replacement using (hopefully local) webhooks is added
 
     // Update channel live time and setup schedule to check every so often
     client.utils.startTime = new Date().getTime();
