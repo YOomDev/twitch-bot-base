@@ -549,7 +549,7 @@ async function loadFollowers(pagination = "") {
                 for (let i = 0; i < newFollowerData.length; i++) { followerData.push(newFollowerData[i]); }
 
                 // Clean up temporary data
-                newFollowerData.splice(0, newfollowerData.length);
+                newFollowerData.splice(0, newFollowerData.length);
                 logInfo("Finished loading follower cache");
             }
         });
