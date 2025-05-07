@@ -292,7 +292,6 @@ async function registerCommands() {
     client.commands.slice(0, client.commands.length);
 
     const folders = ["./commands", "./twitch-bot-base/commands"];
-    // for (const folder of commandFolders) { folders.push(folder); }
     for (const folder of folders) {
         const commandFiles = fs.readdirSync(folder).filter(file => file.endsWith('.mjs'));
         for (const file of commandFiles) {
