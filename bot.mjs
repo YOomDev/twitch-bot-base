@@ -550,6 +550,7 @@ async function loadFollowers(pagination = "") {
 
                 // Clean up temporary data
                 newFollowerData.splice(0, newFollowerData.length);
+                chunk = 0;
                 logInfo("Finished loading follower cache");
             }
         });
