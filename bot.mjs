@@ -591,6 +591,7 @@ async function isTwitchChannelLive() {
     } else {
         if (client.utils.streamStartTime !== client.utils.startTime) { logInfo(`Channel ${channel} just went offline.`); }
         client.utils.streamStartTime = client.utils.startTime;
+        twitchChatters.splice(0, twitchChatters.length);
         return false;
     }
 }
