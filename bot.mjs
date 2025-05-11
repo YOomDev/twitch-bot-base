@@ -585,11 +585,11 @@ async function isTwitchChannelLive() {
     if (!response.ok) { logWarning(`Could not fetch isLive status! http response: ${response.status}`); logData(response); return; }
     const json = await response.json();
     if (json.data.length > 0) {
-        logInfo(`Channel ${channel} just went live.`);
+        if (client.utils.streamStartTime === client.utils.startTime) { logInfo(`Channel ${channel} just went live.`); }
         client.utils.streamStartTime = new Date(json.data[0].started_at).getTime();
         return true;
     } else {
-        logInfo(`Channel ${channel} just went offline.`);
+        if (client.utils.streamStartTime !== client.utils.startTime) { logInfo(`Channel ${channel} just went offline.`); }
         client.utils.streamStartTime = client.utils.startTime;
         return false;
     }
