@@ -582,7 +582,7 @@ async function isTwitchChannelLive() {
             'Authorization': `Bearer ${config.ttvtoken}`
         }
     });
-    if (!response.ok) { logWarning(`Could not fetch isLive status! http response: ${response.status}`); logData(response); return; }
+    if (!response.ok) { logWarning(`Could not fetch isLive status! http response: ${response.status}`); logData(response); return client.utils.streamStartTime !== client.utils.startTime; }
     const json = await response.json();
     if (json.data.length > 0) {
         if (client.utils.streamStartTime === client.utils.startTime) { logInfo(`Channel ${channel} just went live.`); }
