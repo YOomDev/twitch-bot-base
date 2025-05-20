@@ -539,7 +539,7 @@ async function loadFollowers(pagination = "") {
                 newFollowerData.push({
                     id: json.data[i].user_id,
                     name: `${json.data[i].user_name}`,
-                    time: parseTwitchTime(`${json.data[i].followed_at}`)
+                    time: new Date(json.data[i].followed_at)
                 });
             }
             if (chunk === Math.ceil(json.total / amountPerChunk)) {
@@ -555,18 +555,6 @@ async function loadFollowers(pagination = "") {
             }
         });
     }).on('error', err => { logError(err); });
-}
-
-function parseTwitchTime(timeString) {
-    const parts = timeString.split("T");
-    const dateStr = parts[0].split("-");
-    const timeStr = parts[1].replaceAll("Z", "").split(":");
-    const date = new Date();
-    date.setFullYear(parseInt(dateStr[0]), parseInt(dateStr[1])-1, parseInt(dateStr[2]));
-    date.setHours(parseInt(timeStr[0]));
-    date.setMinutes(parseInt(timeStr[1]));
-    date.setSeconds(parseInt(timeStr[2]));
-    return date.getTime();
 }
 
 ///////////////
