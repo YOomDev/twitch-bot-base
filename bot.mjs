@@ -31,7 +31,7 @@ function reload() {
     registerCommands().catch(err => { logError(err); });
     if (autoMsgConfig.enabled === true) { reloadAutomatedMessages().catch(_ => {}); }
     loadFollowers().catch( err => { logError(err); });
-    setInterval(loadFollowers, 4 * 60* 60 * 1000); // TODO: temporary 4h interval follower reload until the replacement using (hopefully local) webhooks is added
+    setInterval(loadFollowers, 4 * 60 * 60 * 1000); // TODO: temporary 4h interval follower reload until the replacement using (hopefully local) webhooks is added
 
     // Update channel live time and setup schedule to check every so often
     client.utils.startTime = new Date().getTime();
@@ -44,7 +44,7 @@ function reload() {
 ////////////////
 
 function getUserType(userState) {
-    if (equals(userState.username, config.superuserName))         { return client.roles.DEVELOPER  ; }
+    if (equals(userState.username, config.superuserName)        ) { return client.roles.DEVELOPER  ; }
     if (userState.badges     && userState.badges['broadcaster'] ) { return client.roles.BROADCASTER; }
     if (userState.mod                                           ) { return client.roles.MODERATOR  ; }
     if (userState.badges     && userState.badges['vip']         ) { return client.roles.VIP        ; }
@@ -57,7 +57,7 @@ function getUserType(userState) {
 
 function getAdminLevel(type) {
     const index = client.adminLevels.indexOf(type);
-    if (index < 1) { logWarning(`No admin level found for type: ${type}`); }
+    if (index < 0) { logWarning(`No admin level found for type: ${type}`); }
     return index;
 }
 
