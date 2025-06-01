@@ -48,7 +48,7 @@ function getUserType(userState) {
     if (userState.badges     && userState.badges['broadcaster'] ) { return client.roles.BROADCASTER; }
     if (userState.mod                                           ) { return client.roles.MODERATOR  ; }
     if (userState.badges     && userState.badges['vip']         ) { return client.roles.VIP        ; }
-    if (userState.subscriber                                    ) { return client.roles.SUBSCRIBER ; }
+    if (userState.subscriber || userState.founder               ) { return client.roles.SUBSCRIBER ; }
     if (userState.badges     && userState.badges['premium']     ) { return client.roles.PRIME      ; }
     logWarning("No role determined from:");
     logData(userState.badges);
