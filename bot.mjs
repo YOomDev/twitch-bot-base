@@ -58,7 +58,7 @@ function getUserType(userState) {
 function getAdminLevel(type) {
     const index = client.adminLevels.indexOf(type);
     if (index < 1) { logWarning(`No admin level found for type: ${type}`); }
-    return -1;
+    return index;
 }
 
 const client = new Client({
