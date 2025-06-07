@@ -333,6 +333,18 @@ async function parseTwitch(channel, userState, message) {
             if (equals(commandName, client.commands[i].name)) {
                 const command = client.commands[i].command;
 
+                // Hidden commands
+                if ("hidden" in command) { // Check for command flag
+                    if(command.hidden === true) { // Chekc if command is set to hidden
+                        // Fail finding the command if user is not broadcaster or developer/superuser
+                        if (!client.utils.isAdminLevel(userState, client.roles.BROADCASTER)) {
+                            found = false;
+                            break;
+                        }
+                    }
+                }
+
+                // Command pass-through
                 command.reply(client, channel, userState, params, message);
 
                 // end
