@@ -327,7 +327,6 @@ async function parseTwitch(channel, userState, message) {
     if (message.startsWith(prefix)) {
         const params = message.trim().substring(prefix.length, message.length).split(" ");
         const commandName = params.shift().toLowerCase();
-        // const adminLevel = getAdminLevel(getUserType(userState));
 
         let found = false;
         for (let i = 0; i < client.commands.length; i++) {
