@@ -5,6 +5,7 @@ const loadJSON = (path) => JSON.parse(fs.readFileSync(new URL(path, import.meta.
 
 import { logError, logWarning, logInfo, logData, sleep, contains, equals, randomInt, concat } from "./utils.mjs";
 import https from "https";
+import {saveJSON} from "../commands/utils/utils.mjs";
 
 // Bot file
 const commandProperties = ["name", "reply"];
@@ -81,6 +82,7 @@ client.utils = {
 };
 client.utils.streamStartTime = 0;
 client.utils.startTime = 0;
+client.utils.getCookies = function (username) { return username in cookies ? +cookies[username] : 0; }
 client.utils.isFollower = function (userId, type = "") {
     switch (type.toLowerCase()) {
         case 'name':
@@ -203,6 +205,9 @@ function refreshTokens() {
     }).on('error', err => { logError(err); return "An error occurred trying to process this command."; });
 
     // See if json parse succeeds, if not error occured
+    const responsejson = JSON.parse(responsetext);
+
+    // TODO
 }
 
 function setupEvents() {
@@ -357,6 +362,14 @@ async function parseTwitch(channel, userState, message) {
             sendMessageTwitch(channel, `Couldn't find the command that you tried to use ${userName}...`)
         }
     } else {
+        // Cookies
+        if (client.utils.isAdminLevel(userState, client.roles.PRIME)) {
+            if (!(userName in cookies)) { cookies[userName] = 1; }
+            else { cookies[userName]++; }
+            saveJSON("./data/cookies.json", cookies);
+        }
+
+        // New chatter response
         if (!contains(twitchChatters, userId)) {
             if (message.toString().indexOf("***") > -1) { return; }
             // if (hasURL(message)) { return; }
@@ -546,7 +559,7 @@ async function loadFollowers(pagination = "") {
             chunk++;
             logInfo(`Parsing chunk ${chunk}/${Math.max(1, Math.ceil(json.total / amountPerChunk))}`);
             const next = `${json.pagination.cursor}`.toString();
-            if (next.length > 10) { sleep(secondsPerChunk).then(_ => loadFollowers(next)); } // Only start loading next batch if a new pagination for a batch has been given from the loaded data
+            if (next.length > 10) { sleep(secondsPerChunk).then(_ => loadFollowers(next)); } // Only                                                                start loading next batch if a new pagination for a batch has been given from the loaded data
             for (let i = 0; i < json.data.length; i++) {
                 newFollowerData.push({
                     id: json.data[i].user_id,
