@@ -10,6 +10,7 @@ import https from "https";
 const commandProperties = ["name", "reply"];
 const config = loadJSON('./config.json');
 let autoMsgConfig = loadJSON('./automatedmessages.json');
+let cookies = loadJSON("./data/cookies.json");
 
 const twitchChatters = [];
 
