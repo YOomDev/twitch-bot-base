@@ -358,14 +358,13 @@ async function parseTwitch(channel, userState, message) {
                 break;
             }
         }
-        if (!found) {
-            sendMessageTwitch(channel, `Couldn't find the command that you tried to use ${userName}...`)
-        }
+        if (!found) { sendMessageTwitch(channel, `Couldn't find the command that you tried to use ${userName}...`); }
     } else {
         // Cookies
         if (client.utils.isAdminLevel(userState, client.roles.PRIME)) {
             if (!(userName in cookies)) { cookies[userName] = 1; }
-            else { cookies[userName]++; }
+            else { cookies[userName] += 1; }
+            logData(cookies);
             saveJSON("./data/cookies.json", cookies);
         }
 
