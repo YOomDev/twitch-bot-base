@@ -82,7 +82,7 @@ client.utils = {
 };
 client.utils.streamStartTime = 0;
 client.utils.startTime = 0;
-client.utils.getCookies = function (username) { return username in cookies ? +cookies[username] : 0; }
+client.utils.getCookies = function (username) { return (username in cookies) ? cookies[username] : 0; }
 client.utils.isFollower = function (userId, type = "") {
     switch (type.toLowerCase()) {
         case 'name':
