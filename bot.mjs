@@ -302,7 +302,7 @@ async function registerCommands() {
     for (const folder of folders) {
         const commandFiles = fs.readdirSync(folder).filter(file => file.endsWith('.mjs'));
         for (const file of commandFiles) {
-            const filePath = "..\\" + path.join(folder, file);
+            const filePath = "../" + path.join(folder, file);
             let command = (await import(new URL(filePath, import.meta.url)).catch(err => logError(err)).then(_ => { return _; })).default;
 
             // Check if command has all the needed properties
